@@ -65,7 +65,7 @@ weeks = [assemble_url(year, week) for week in range(start_week, end_week + 1)]
 
 for i, week in enumerate(weeks):
     scoreboard = weekly_scrape(week)
-    filename = 'data/{league_name}/week_{week_num}.json'.format(league_name = league_name, week_num = i)
+    filename = 'data/{league_name}/week_{week_num}.json'.format(league_name = league_name, week_num = start_week + i)
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     f = open(filename, 'w')
     f.write(json.dumps(scoreboard))
