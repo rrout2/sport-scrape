@@ -22,8 +22,7 @@ end_week = int(args['end_week'])
 year = '2023' if 'year' not in args else args['year']
 league_name = league_id if 'name' not in args else args['name']
 
-def weekly_scrape(url: str):
-    scraper = Scraper()
+def initial_login(url: str, scraper: Scraper):
     scraper.go_to(url)
     scraper.enter_iframe('#oneid-iframe')
 
@@ -42,6 +41,9 @@ def weekly_scrape(url: str):
     scraper.go_to(url)
     scraper.driver.refresh()
 
+def weekly_scrape(url: str, scraper: Scraper):
+    scraper.go_to(url)
+
     nameElements = scraper.driver.find_elements(By.CLASS_NAME, 'ScoreCell__TeamName')
     scoreElements = scraper.driver.find_elements(By.CLASS_NAME, 'ScoreCell__Score')
 
@@ -53,20 +55,21 @@ def weekly_scrape(url: str):
         scoreboard[name] = score
         print('{Name}: {Score}'.format(Name = name, Score = score))
 
-    scraper.close()
-
     return scoreboard
 
-def assemble_url(season_id: str, week: str):
-    fmtStr = 'https://fantasy.espn.com/football/boxscore?leagueId={league_id}&matchupPeriodId={week}&scoringPeriodId={week}&seasonId={season_id}'
-    return fmtStr.format(season_id = season_id, week = week, league_id = league_id)
+def assemble_url(season_id: str, week_idx: str):
+    fmtStr = 'https://fantasy.espn.com/football/boxscore?leagueId={league_id}&matchupPeriodId={week_idx}&scoringPeriodId={week_idx}&seasonId={season_id}'
+    return fmtStr.format(season_id = season_id, week_idx = week_idx, league_id = league_id)
 
-weeks = [assemble_url(year, week) for week in range(start_week, end_week + 1)]
+urls = [assemble_url(year, week_idx) for week_idx in range(start_week, end_week + 1)]
+scraper = Scraper()
+initial_login(urls[0], scraper)
 
-for i, week in enumerate(weeks):
-    scoreboard = weekly_scrape(week)
+for i, url in enumerate(urls):
+    scoreboard = weekly_scrape(url, scraper)
     filename = 'data/{league_name}/week_{week_num}.json'.format(league_name = league_name, week_num = start_week + i)
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     f = open(filename, 'w')
     f.write(json.dumps(scoreboard))
     f.close()
+scraper.close()
