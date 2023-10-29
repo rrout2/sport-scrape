@@ -57,11 +57,11 @@ def weekly_scrape(url: str, scraper: Scraper):
 
     return scoreboard
 
-def assemble_url(season_id: str, week_idx: str):
-    fmtStr = 'https://fantasy.espn.com/football/boxscore?leagueId={league_id}&matchupPeriodId={week_idx}&scoringPeriodId={week_idx}&seasonId={season_id}'
-    return fmtStr.format(season_id = season_id, week_idx = week_idx, league_id = league_id)
+def assemble_url(season_id: str, week_num: str):
+    fmtStr = 'https://fantasy.espn.com/football/boxscore?leagueId={league_id}&matchupPeriodId={week_num}&scoringPeriodId={week_num}&seasonId={season_id}'
+    return fmtStr.format(season_id = season_id, week_num = week_num, league_id = league_id)
 
-urls = [assemble_url(year, week_idx) for week_idx in range(start_week, end_week + 1)]
+urls = [assemble_url(year, week_num) for week_num in range(start_week, end_week + 1)]
 scraper = Scraper()
 initial_login(urls[0], scraper)
 
