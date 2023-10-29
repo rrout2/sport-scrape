@@ -1,3 +1,4 @@
 secrets/
 src/__pycache__/
 data/
+scripts/local/
