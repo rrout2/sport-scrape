@@ -12,4 +12,4 @@
 
 This should output json files of your data to `data/name/`.
 
-4) Create a graph visualization by running `./scripts/generate_week.sh -i data/name/week_1.json`.
+4) Create a graph visualization by running `./scripts/generate_week.sh -i data/name -o viz/name`.
