@@ -6,4 +6,4 @@ do
     esac
 done
 
-python src/generate_week.py -i $input_path -o $output_path
+python src/generate_weekly_graphs.py -i $input_path -o $output_path
