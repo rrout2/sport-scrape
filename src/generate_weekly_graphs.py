@@ -4,8 +4,8 @@ import pygal
 import os
 
 parser = argparse.ArgumentParser(description='Description of your program')
-parser.add_argument('-i','--input-path', help='The path to your json data (data/*/week_*.json)', required=True)
-parser.add_argument('-o','--output-path', help='The output path to your json data (viz/*.svg)', required=False)
+parser.add_argument('-i','--input-path', help='The path to your json data. (data/*/week_*.json)', required=True)
+parser.add_argument('-o','--output-path', help='The output path of the generated graph. (viz/*.svg)', required=False)
 args = vars(parser.parse_args())
 
 input_path = args['input_path']

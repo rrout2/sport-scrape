@@ -27,12 +27,12 @@ def initial_login(url: str, scraper: Scraper):
     scraper.enter_iframe('#oneid-iframe')
 
     email_input = scraper.find_by_selector('#InputIdentityFlowValue')
-    scraper.enter_text(email_input, open('secrets/email.txt', 'r').read())
+    scraper.enter_text(email_input, open('secrets/email.txt', 'r').read().strip())
 
     scraper.click_selector('#BtnSubmit')
 
     pw_input = scraper.find_by_selector('#InputPassword')
-    scraper.enter_text(pw_input, open('secrets/password.txt', 'r').read())
+    scraper.enter_text(pw_input, open('secrets/password.txt', 'r').read().strip())
 
     scraper.click_selector('#BtnSubmit')
 
