@@ -8,4 +8,4 @@ do
     esac
 done
 
-python src/weekly_scrape.py -l $league_id -s $start_week -e $end_week -n $name
+python src/scrape/weekly_scrape.py -l $league_id -s $start_week -e $end_week -n $name

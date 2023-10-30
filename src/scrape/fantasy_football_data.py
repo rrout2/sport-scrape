@@ -1,6 +1,6 @@
 import typing
 
-from team import Team
+from scrape.team import Team
 
 class FantasyFootballData:
     def __init__(self, teams: list[Team] = []):

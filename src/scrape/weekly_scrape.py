@@ -57,6 +57,10 @@ def weekly_scrape(url: str, scraper: Scraper):
 
     return scoreboard
 
+def scrape_standings(league_id, str, scrape: Scraper):
+    scraper.go_to('https://fantasy.espn.com/football/league/standings?leagueId={league_id}&seasonId=2023'.format(league_id = league_id))
+
+
 def assemble_url(season_id: str, week_num: str):
     fmtStr = 'https://fantasy.espn.com/football/boxscore?leagueId={league_id}&matchupPeriodId={week_num}&scoringPeriodId={week_num}&seasonId={season_id}'
     return fmtStr.format(season_id = season_id, week_num = week_num, league_id = league_id)

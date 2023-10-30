@@ -1,4 +1,6 @@
 secrets/
-src/__pycache__/
+__pycache__/
 data/
 scripts/local/
+.DS_store
+.vscode/settings.json
