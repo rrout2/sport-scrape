@@ -1,5 +1,3 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 
@@ -41,7 +39,7 @@ def initial_login(url: str, scraper: Scraper):
     scraper.go_to(url)
     scraper.driver.refresh()
 
-def weekly_scrape(url: str, scraper: Scraper):
+def scrape_scoreboard(url: str, scraper: Scraper):
     scraper.go_to(url)
 
     nameElements = scraper.driver.find_elements(By.CLASS_NAME, 'ScoreCell__TeamName')
@@ -66,7 +64,7 @@ scraper = Scraper()
 initial_login(urls[0], scraper)
 
 for i, url in enumerate(urls):
-    scoreboard = weekly_scrape(url, scraper)
+    scoreboard = scrape_scoreboard(url, scraper)
     filename = 'data/{league_name}/week_{week_num}.json'.format(league_name = league_name, week_num = start_week + i)
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     f = open(filename, 'w')
