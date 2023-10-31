@@ -7,4 +7,4 @@ do
     esac
 done
 
-python src/weekly_scrape.py -l $league_id -s $week_number -e $week_number -n $name
+python src/scrape/weekly_scrape.py -l $league_id -s $week_number -e $week_number -n $name

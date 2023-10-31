@@ -25,12 +25,12 @@ def initial_login(url: str, scraper: Scraper):
     scraper.enter_iframe('#oneid-iframe')
 
     email_input = scraper.find_by_selector('#InputIdentityFlowValue')
-    scraper.enter_text(email_input, open('secrets/email.txt', 'r').read())
+    scraper.enter_text(email_input, open('secrets/email.txt', 'r').read().strip())
 
     scraper.click_selector('#BtnSubmit')
 
     pw_input = scraper.find_by_selector('#InputPassword')
-    scraper.enter_text(pw_input, open('secrets/password.txt', 'r').read())
+    scraper.enter_text(pw_input, open('secrets/password.txt', 'r').read().strip())
 
     scraper.click_selector('#BtnSubmit')
 
@@ -54,6 +54,10 @@ def scrape_scoreboard(url: str, scraper: Scraper):
         print('{Name}: {Score}'.format(Name = name, Score = score))
 
     return scoreboard
+
+def scrape_standings(league_id, str, scrape: Scraper):
+    scraper.go_to('https://fantasy.espn.com/football/league/standings?leagueId={league_id}&seasonId=2023'.format(league_id = league_id))
+
 
 def assemble_url(season_id: str, week_num: str):
     fmtStr = 'https://fantasy.espn.com/football/boxscore?leagueId={league_id}&matchupPeriodId={week_num}&scoringPeriodId={week_num}&seasonId={season_id}'
