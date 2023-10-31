@@ -1,6 +1,7 @@
 class Team:
-    def __init__(self, name: str, wins = 0, losses = 0, points_for: list[float] = []):
+    def __init__(self, name: str, rank: int, points_for: list[float] = []):
         self.name = name
-        self.wins = wins
-        self.losses = losses
+        self.rank = rank
         self.points_for = points_for
+    def __str__(self):
+        return '{rank}: {name}, PF: {points_for}'.format(rank = self.rank, name = self.name, points_for = self.points_for)

@@ -1,17 +1,20 @@
 import typing
 
-from scrape.team import Team
+from team import Team
 
 class FantasyFootballData:
     def __init__(self, teams: list[Team] = []):
-        self.teams: list[Team] = teams.sort(key=lambda t: t.wins - t.losses, reverse=True)
+        self.teams: list[Team] = teams.sort(key=lambda t: t.rank)
         self.matchups: typing.Dict[Team, set[Team]] = {}
         for team in teams:
             self.matchups[team] = set()
+    
+    def __str__(self):
+        return str(self.teams)
 
     def add_team(self, team: Team):
         self.teams.append(team)
-        self.teams.sort(key=lambda t: t.wins - t.losses, reverse=True)
+        self.teams.sort(key=lambda t: t.rank)
         self.matchups[team] = set()
 
     def add_matchup(self, team1, team2: Team):

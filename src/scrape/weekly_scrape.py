@@ -1,5 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
+from fantasy_football_data import FantasyFootballData
+from team import Team
 
 from scraper import Scraper
 import argparse
@@ -13,32 +15,6 @@ parser.add_argument('-l','--league-id',  help='The ESPN ID of your league',     
 parser.add_argument('-s','--start-week', help='The first week you want to scrape.', required=True)
 parser.add_argument('-e','--end-week',   help='The last week you want to scrape.',  required=True)
 
-args = vars(parser.parse_args())
-league_id = args['league_id']
-start_week= int(args['start_week'])
-end_week = int(args['end_week'])
-year = '2023' if 'year' not in args else args['year']
-league_name = league_id if 'name' not in args else args['name']
-
-def initial_login(url: str, scraper: Scraper):
-    scraper.go_to(url)
-    scraper.enter_iframe('#oneid-iframe')
-
-    email_input = scraper.find_by_selector('#InputIdentityFlowValue')
-    scraper.enter_text(email_input, open('secrets/email.txt', 'r').read().strip())
-
-    scraper.click_selector('#BtnSubmit')
-
-    pw_input = scraper.find_by_selector('#InputPassword')
-    scraper.enter_text(pw_input, open('secrets/password.txt', 'r').read().strip())
-
-    scraper.click_selector('#BtnSubmit')
-
-    scraper.driver.switch_to.default_content()
-    scraper.driver.find_element(By.CLASS_NAME, 'error-message')
-    scraper.go_to(url)
-    scraper.driver.refresh()
-
 def scrape_scoreboard(url: str, scraper: Scraper):
     scraper.go_to(url)
 
@@ -51,21 +27,37 @@ def scrape_scoreboard(url: str, scraper: Scraper):
     scoreboard = {}
     for name, score in zip(names, scores):
         scoreboard[name] = score
-        print('{Name}: {Score}'.format(Name = name, Score = score))
 
     return scoreboard
 
-def scrape_standings(league_id, str, scrape: Scraper):
+# WIP
+def scrape_standings(league_id: str, scraper: Scraper):
     scraper.go_to('https://fantasy.espn.com/football/league/standings?leagueId={league_id}&seasonId=2023'.format(league_id = league_id))
+    ranks = scraper.driver.find_elements(By.CSS_SELECTOR, '.table--cell.rank:not(.header)')
+    ranks = ranks[len(ranks) // 2:]
+    ranks = [rank.text for rank in ranks]
+    names = scraper.driver.find_elements(By.CSS_SELECTOR, '.v-mid.team--link')
+    names = names[len(names) // 2:]
+    names = [name.text for name in names]
+
+    data = FantasyFootballData([Team(name, rank) for name, rank in zip(names, ranks)])
+
+    return data
 
 
-def assemble_url(season_id: str, week_num: str):
+def assemble_url(season_id, league_id, week_num: str):
     fmtStr = 'https://fantasy.espn.com/football/boxscore?leagueId={league_id}&matchupPeriodId={week_num}&scoringPeriodId={week_num}&seasonId={season_id}'
     return fmtStr.format(season_id = season_id, week_num = week_num, league_id = league_id)
 
-urls = [assemble_url(year, week_num) for week_num in range(start_week, end_week + 1)]
+args = vars(parser.parse_args())
+league_id = args['league_id']
+start_week= int(args['start_week'])
+end_week = int(args['end_week'])
+year = '2023' if 'year' not in args else args['year']
+league_name = league_id if 'name' not in args else args['name']
+
+urls = [assemble_url(year, league_id, week_num) for week_num in range(start_week, end_week + 1)]
 scraper = Scraper()
-initial_login(urls[0], scraper)
 
 for i, url in enumerate(urls):
     scoreboard = scrape_scoreboard(url, scraper)

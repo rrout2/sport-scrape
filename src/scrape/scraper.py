@@ -4,7 +4,10 @@ from selenium.webdriver.remote.webelement import WebElement
 
 class Scraper:
     def __init__(self):
-        driver = webdriver.Chrome()
+        options = webdriver.ChromeOptions() 
+        options.add_argument('--user-data-dir=C:\\Users\\tourv\\AppData\\Local\\Google\\Chrome\\User Data')
+        options.add_argument('--profile-directory=Profile 1')
+        driver = webdriver.Chrome(options=options)
         FIVE_SECONDS = 5
         driver.implicitly_wait(FIVE_SECONDS)
         self.driver = driver

@@ -4,3 +4,4 @@ data/
 scripts/local/
 .DS_store
 .vscode/settings.json
+src/scrape/__pycache__/
