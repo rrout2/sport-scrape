@@ -1,5 +1,5 @@
 class Team:
-    def __init__(self, name: str, rank: int, points_for: list[float] = []):
+    def __init__(self, name: str, rank: int, points_for: float):
         self.name = name
         self.rank = rank
         self.points_for = points_for

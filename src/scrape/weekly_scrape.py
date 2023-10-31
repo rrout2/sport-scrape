@@ -35,12 +35,15 @@ def scrape_standings(league_id: str, scraper: Scraper):
     scraper.go_to('https://fantasy.espn.com/football/league/standings?leagueId={league_id}&seasonId=2023'.format(league_id = league_id))
     ranks = scraper.driver.find_elements(By.CSS_SELECTOR, '.table--cell.rank:not(.header)')
     ranks = ranks[len(ranks) // 2:]
-    ranks = [rank.text for rank in ranks]
+    ranks = [int(rank.text) for rank in ranks]
     names = scraper.driver.find_elements(By.CSS_SELECTOR, '.v-mid.team--link')
     names = names[len(names) // 2:]
     names = [name.text for name in names]
 
-    data = FantasyFootballData([Team(name, rank) for name, rank in zip(names, ranks)])
+    points_for = scraper.driver.find_elements(By.CSS_SELECTOR, '.table--cell.points-for:not(.header)')
+    points_for = [float(pf.text) for pf in points_for]
+
+    data = [Team(name, rank, pf) for name, rank, pf in zip(names, ranks, points_for)]
 
     return data
 
@@ -59,6 +62,13 @@ league_name = league_id if 'name' not in args else args['name']
 urls = [assemble_url(year, league_id, week_num) for week_num in range(start_week, end_week + 1)]
 scraper = Scraper()
 
+data = FantasyFootballData(scrape_standings(league_id, scraper))
+print(data.__dict__)
+filename = 'test.json'
+# os.makedirs(os.path.dirname(filename), exist_ok=True)
+f = open(filename, 'w')
+f.write(json.dumps(data.__dict__))
+f.close()
 for i, url in enumerate(urls):
     scoreboard = scrape_scoreboard(url, scraper)
     filename = 'data/{league_name}/week_{week_num}.json'.format(league_name = league_name, week_num = start_week + i)
@@ -66,4 +76,5 @@ for i, url in enumerate(urls):
     f = open(filename, 'w')
     f.write(json.dumps(scoreboard))
     f.close()
+
 scraper.close()
